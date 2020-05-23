@@ -4,7 +4,7 @@ let apiaiApp = require('apiai')
 let auth = require(`./config.${process.env.NODE_ENV}.json`);
 
 // Initialize Discord Bot
-let chatApi = apiaiApp(auth.DIALOGLFOW_BOT_TOKEN)
+let chatApi = apiaiApp(auth.DIALOGFLOW_BOT_TOKEN)
 let bot = new Discord.Client();
 bot.on('ready', ()=> {
     console.log('Connected');
@@ -28,6 +28,9 @@ bot.on('message', (message) => {
         let args = content.substring(1).split(' ');
         let cmd = args[0];
         switch(cmd) {
+            case 'help':
+                helpHandler({channel});
+                break;
             case 'hi':
                 helloHandler({channel, user, member});
                 break;
@@ -109,6 +112,11 @@ bot.on('voiceStateUpdate', (oldState, newState) => {
 });
 
 const logLine = () => console.log('-----------------------------------------');
+const helpHandler = ({channel}) => {
+    const listText = "```commands list:\n!help\n!banana\n!turnip\n!talk [text]\n!chat [text]\n```";
+    channel.send(listText)
+}
+
 const talkHandler = ({channel, text = ''}) => {
     channel.send(text, {tts: true})
 };
