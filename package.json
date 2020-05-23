@@ -1,0 +1,17 @@
+{
+  "name": "furry-bear",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "set NODE_ENV=prod&& node bot.js",
+    "dev": "set NODE_ENV=dev&& node bot.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "apiai": "^4.0.3",
+    "discord.js": "^12.2.0"
+  }
+}
