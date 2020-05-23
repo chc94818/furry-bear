@@ -8,8 +8,8 @@ All commnads should add prefix `!` to trigger it.
 - !help: list all commands.
 - !banana: banana message.
 - !turnip: reply a `turnip` emoji.(need to add an emoji for using).
-- !talk <text>: let the bot talk the `text` with tts support.
-- !chat <text>: let bot response your meesage `text` with DialogFlow's support.
+- !talk [text]: let the bot talk the `text` with tts support.
+- !chat [text]: let bot response your meesage `text` with DialogFlow's support.
 
 ## Install and Run the bot
 Before you start to run the bot, you may need to add the token by create two files `config.dev.json` and `config.prod.json` in the furry-bear project's folder
