@@ -133,11 +133,15 @@ const chatHandler = ({channel, user, text = ''}) => {
     var request = chatApi.textRequest(text, {
         sessionId: userId
     });
-
+    console.log('chatHandler')
     // Listen to a response from API.ai
     request.on('response', (response) => {
+        console.log('chatHandler response',response)
         // Reply the user with the given response
-        channel.send(response.result.fulfillment.speech)
+        console.log(response.result.fulfillment.speech)
+        if(response.result.fulfillment.speech){
+            channel.send(response.result.fulfillment.speech)
+        }
     });
 
     // Listen for any errors in the response
