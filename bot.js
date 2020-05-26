@@ -136,7 +136,6 @@ const chatHandler = ({channel, user, text = ''}) => {
     console.log('chatHandler')
     // Listen to a response from API.ai
     request.on('response', (response) => {
-        console.log('chatHandler response',response)
         // Reply the user with the given response
         console.log(response.result.fulfillment.speech)
         if(response.result.fulfillment.speech){
