@@ -60,11 +60,11 @@ bot.on('message', (message) => {
         }
 
         // react with weather
-        var weatherKeywords = ["天氣", "溫度", "氣溫", "氣候", "雨", "太陽", "陰天", "濕度"]
-        var hasWeatherInContent = weatherKeywords.some(k => content.includes(k))
-        if (hasWeatherInContent) {
-            chatHandler({channel, user, text: content || ''})
-        }
+        // var weatherKeywords = ["天氣", "溫度", "氣溫", "氣候", "雨", "太陽", "陰天", "濕度"]
+        // var hasWeatherInContent = weatherKeywords.some(k => content.includes(k))
+        // if (hasWeatherInContent) {
+        // }
+        chatHandler({channel, user, text: content || ''})
     }    
 
     
