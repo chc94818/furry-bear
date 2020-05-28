@@ -136,7 +136,9 @@ const chatHandler = ({channel, user, text = ''}) => {
     // Listen to a response from API.ai
     request.on('response', (response) => {
         // Reply the user with the given response
-        if(response.result.fulfillment.speech){
+        const botResponse = response.result.fulfillment.speech
+
+        if(botResponse && botResponse !== 'no-city'){
             channel.send(response.result.fulfillment.speech)
         }
     });
