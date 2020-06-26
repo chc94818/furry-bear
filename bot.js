@@ -33,6 +33,8 @@ bot.on('message', (message) => {
     if (content.substring(0, 1) == '!') {
         let args = content.substring(1).split(' ')
         let cmd = args[0]
+        let [first, ...rest] = content.substring(1).split(' ')
+        argsContent = rest.join(' ')
         switch(cmd) {
             case 'help':
                 helpHandler({channel})
@@ -47,16 +49,16 @@ bot.on('message', (message) => {
                 message.react("712971888808165408")
                 break
             case 'talk':    
-                talkHandler({channel, text: args[1] || ''})
+                talkHandler({channel, text: argsContent || ''})
                 break
             case 'voteCreate':
-                voteCreate({channel, voteTitle: args[1] || ''})
+                voteCreate({channel, voteTitle: argsContent || ''})
                 break
             case 'voteEnd':
                 voteEnd({channel})
                 break
             case 'voteAdd':
-                voteEntryAdd({channel, entryTitle: args[1] || ''})
+                voteEntryAdd({channel, entryTitle: argsContent || ''})
                 break
             case 'vote':
                 voteSelect({channel, selectEntry: args[1] || ''})
