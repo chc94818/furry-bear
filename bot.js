@@ -140,7 +140,7 @@ bot.on('voiceStateUpdate', (oldState, newState) => {
 
 const logLine = () => console.log('-----------------------------------------')
 const helpHandler = ({channel}) => {
-    const listText = "```commands list:\n!help\n!banana\n!turnip\n!talk [text]\n!chat [text]\n```"
+    const listText = "```commands list:\n!help\n!banana\n!turnip\n!talk [text]\n!chat [text]\n!voteCreate [text]\n!voteEnd [text]\n!voteAdd [text]\n!vote [index]\n!voteStatus\n```"
     channel.send(listText)
 }
 
@@ -155,10 +155,8 @@ const voteCreate = ({channel, voteTitle = '新的投票'}) => {
     } else {
         hasVote = true        
         this.voteTitle = voteTitle || '新的投票'
-        let text = '已建立投票: ' + this.voteTitle
-        channel.send(text)
-        text = '可以用 !voteAdd [entry] 來新增投票項目'
-        channel.send(text)
+        let listText = "```已建立投票: " + this.voteTitle + "!\n可以用 !voteAdd [entry] 來新增投票項目。```" 
+        channel.send(listText)
     }
 }
 
@@ -176,13 +174,12 @@ const voteEnd = ({channel}) => {
                     winners.push (voteEntry[0])
                 }
             })
-            let text = '最高票為: ' + maxVote + '票!'
-            channel.send(text)
-            winnerText = '項目是: '
+            let listText = "```最高票為:"  + maxVote + "票!\n項目是: "
             winners.forEach((winner)=>{
-                winnerText += winner + ' '
+                listText += winner + "\n"
             })
-            channel.send(winnerText)
+            listText += "```"
+            channel.send(listText)
         }
         hasVote = false
         voteTitle = ''
@@ -244,12 +241,14 @@ const voteDisplay = ({channel}) => {
         channel.send(text)
     }else {
         text = '正在舉行投票: ' + voteTitle
-        channel.send(text)
+        let listText = "```正在舉行投票" + voteTitle +"\n"
         voteEntries.forEach((voteEntry, index) => {
             let entryIndex = index + 1
-            text = entryIndex + " : " + voteEntry[0]+ " : " + voteEntry[1] +' 票';
-            channel.send(text)
+            text = entryIndex + " : " + voteEntry[0]+ " : " + voteEntry[1] +' 票\n';
+            listText+= text
         })
+        listText += "```"
+        channel.send(listText)
     }
 }
 
