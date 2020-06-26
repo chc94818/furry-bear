@@ -151,13 +151,13 @@ const talkHandler = ({channel, text = ''}) => {
 };
 
 
-const voteCreate = ({channel, voteTitle = '新的投票'}) => {
+const voteCreate = ({channel, newVoteTitle = '新的投票'}) => {
     if (hasVote) {
         channel.send('一次只能建立一個投票, 可以用 !voteEnd 來結束投票')
     } else {
         hasVote = true        
-        this.voteTitle = voteTitle || '新的投票'
-        let listText = "```已建立投票: " + this.voteTitle + "!\n可以用 !voteAdd [entry] 來新增投票項目。```" 
+        voteTitle = newVoteTitle || '新的投票'
+        let listText = "```已建立投票: " + voteTitle + "!\n可以用 !voteAdd [entry] 來新增投票項目。```" 
         channel.send(listText)
     }
 }
@@ -242,7 +242,6 @@ const voteDisplay = ({channel}) => {
         text = '尚無投票項目! 請用 !voteAdd [entry] 來添加項目。'
         channel.send(text)
     }else {
-        text = '正在舉行投票: ' + voteTitle
         let listText = "```正在舉行投票" + voteTitle +"\n"
         voteEntries.forEach((voteEntry, index) => {
             let entryIndex = index + 1
