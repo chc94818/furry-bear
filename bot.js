@@ -6,6 +6,12 @@ let auth = require(`./config.${process.env.NODE_ENV}.json`)
 // Initialize Discord Bot
 let chatApi = apiaiApp(auth.DIALOGFLOW_BOT_TOKEN)
 let bot = new Discord.Client()
+let hasVote = false;
+let voteTitle = '';
+let noTitleEntry = 0;
+let voteEntries = [];
+
+
 bot.on('ready', ()=> {
     console.log('Connected')
     console.log('Logged in as: ' + process.env.NODE_ENV + ' mode')
@@ -42,6 +48,21 @@ bot.on('message', (message) => {
                 break
             case 'talk':    
                 talkHandler({channel, text: args[1] || ''})
+                break
+            case 'voteCreate':
+                voteCreate({channel, voteTitle: args[1] || ''})
+                break
+            case 'voteEnd':
+                voteEnd({channel})
+                break
+            case 'voteAdd':
+                voteEntryAdd({channel, entryTitle: args[1] || ''})
+                break
+            case 'vote':
+                voteSelect({channel, selectEntry: args[1] || ''})
+                break
+            case 'voteStatus':
+                voteDisplay({channel})
                 break
             // case 'chat':
             //     chatHandler({channel, user, text: args[1] || ''})
@@ -126,6 +147,111 @@ const helpHandler = ({channel}) => {
 const talkHandler = ({channel, text = ''}) => {
     channel.send(text, {tts: true})
 };
+
+
+const voteCreate = ({channel, voteTitle = '新的投票'}) => {
+    if (hasVote) {
+        channel.send('一次只能建立一個投票, 可以用 !voteEnd 來結束投票')
+    } else {
+        hasVote = true        
+        this.voteTitle = voteTitle || '新的投票'
+        let text = '已建立投票: ' + this.voteTitle
+        channel.send(text)
+        text = '可以用 !voteAdd [entry] 來新增投票項目'
+        channel.send(text)
+    }
+}
+
+const voteEnd = ({channel}) => {
+    if (hasVote) {
+        channel.send('投票結束')
+        if(voteEntries.length > 0) {
+            let maxVote = -1
+            let winners = []
+            voteEntries.forEach((voteEntry)=>{
+                if(voteEntry[1] > maxVote){
+                    maxVote = voteEntry[1]
+                    winners = [voteEntry[0]]
+                } else if(voteEntry[1] === maxVote){
+                    winners.push (voteEntry[0])
+                }
+            })
+            let text = '最高票為: ' + maxVote + '票!'
+            channel.send(text)
+            winnerText = '項目是: '
+            winners.forEach((winner)=>{
+                winnerText += winner + ' '
+            })
+            channel.send(winnerText)
+        }
+        hasVote = false
+        voteTitle = ''
+        voteEntries = []
+    } else {
+        channel.send('尚未舉行投票 !')
+    }
+}
+
+const voteEntryAdd = ({channel, entryTitle = '新的項目'}) => {
+    if (!hasVote) {
+        channel.send('尚未舉行投票 !')
+    } else {
+        let newTitle = ''
+        if(!entryTitle){
+            noTitleEntry += 1;
+            newTitle = '新的項目_' + noTitleEntry
+        } else {
+            newTitle = entryTitle
+        }
+        let titleIsExisted = false
+        voteEntries.forEach(voteEntry => {
+            if(voteEntry[0] === newTitle){
+                titleIsExisted = true
+            }
+        })
+        if(titleIsExisted) {
+            channel.send('已建立的項目 !')
+        } else {
+            let newEntry = [newTitle, 0]
+            voteEntries.push(newEntry)
+            channel.send('新項目建立成功 !')
+            voteDisplay({channel})
+        }
+    }
+}
+
+const voteSelect = ({channel, selectEntry = ''}) => {
+    if (!hasVote) {
+        channel.send('尚未舉行投票 !')
+    } else if(!selectEntry) {
+        channel.send('請輸入想投的編號')
+    }else if(selectEntry < 1 || selectEntry > voteEntries.length || !parseInt(selectEntry)){
+        channel.send('請輸入正確的項目編號')
+    }
+    else {
+        voteEntryIndex = selectEntry - 1
+        voteEntries[voteEntryIndex][1] += 1
+        voteDisplay({channel})
+    }
+}
+
+const voteDisplay = ({channel}) => {
+    let text = ''
+    if (!hasVote) {
+        channel.send('尚未舉行投票 !')
+    } else if(voteEntries.length === 0){
+        text = '尚無投票項目! 請用 !voteAdd [entry] 來添加項目。'
+        channel.send(text)
+    }else {
+        text = '正在舉行投票: ' + voteTitle
+        channel.send(text)
+        voteEntries.forEach((voteEntry, index) => {
+            let entryIndex = index + 1
+            text = entryIndex + " : " + voteEntry[0]+ " : " + voteEntry[1] +' 票';
+            channel.send(text)
+        })
+    }
+}
 
 const chatHandler = ({channel, user, text = ''}) => {
     // Parse the text to the API.ai
