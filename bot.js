@@ -52,7 +52,7 @@ bot.on('message', (message) => {
                 talkHandler({channel, text: argsContent || ''})
                 break
             case 'voteCreate':
-                voteCreate({channel, voteTitle: argsContent || ''})
+                voteCreate({channel, newVoteTitle: argsContent || ''})
                 break
             case 'voteEnd':
                 voteEnd({channel})
