@@ -255,7 +255,7 @@ const voteDisplay = ({channel}) => {
         text = '尚無投票項目! 請用 !voteAdd [entry] 來添加項目。'
         channel.send(text)
     }else {
-        let listText = "```正在舉行投票" + voteTitle +"\n"
+        let listText = "```正在舉行投票: " + voteTitle +"\n"
         voteEntries.forEach((voteEntry, index) => {
             let entryIndex = index + 1
             text = entryIndex + " : " + voteEntry[0]+ " : " + voteEntry[1] +' 票\n';
