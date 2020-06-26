@@ -61,7 +61,7 @@ bot.on('message', (message) => {
                 voteEntryAdd({channel, entryTitle: argsContent || ''})
                 break
             case 'vote':
-                voteSelect({channel, selectEntry: args[1] || ''})
+                voteSelect({channel, selectEntry: argsContent || ''})
                 break
             case 'voteStatus':
                 voteDisplay({channel})
@@ -176,7 +176,7 @@ const voteEnd = ({channel}) => {
                     winners.push (voteEntry[0])
                 }
             })
-            let listText = "```最高票為:"  + maxVote + "票!\n項目是: "
+            let listText = "```最高票為:"  + maxVote + "票!\n項目是:\n"
             winners.forEach((winner)=>{
                 listText += winner + "\n"
             })
@@ -220,18 +220,31 @@ const voteEntryAdd = ({channel, entryTitle = '新的項目'}) => {
 }
 
 const voteSelect = ({channel, selectEntry = ''}) => {
+    let selectIndices  = Array.from(new Set(selectEntry.split(' ')))
+   
+    
     if (!hasVote) {
         channel.send('尚未舉行投票 !')
+        return
     } else if(!selectEntry) {
         channel.send('請輸入想投的編號')
-    }else if(selectEntry < 1 || selectEntry > voteEntries.length || !parseInt(selectEntry)){
-        channel.send('請輸入正確的項目編號')
+        return
+    } else if(selectIndices.length === 1){
+        if(selectIndices[0] < 1 || selectIndices[0] > voteEntries.length || parseInt(selectIndices[0]) != selectIndices[0]){
+            channel.send('請輸入正確的編號')
+            return
+        } 
     }
-    else {
-        voteEntryIndex = selectEntry - 1
-        voteEntries[voteEntryIndex][1] += 1
-        voteDisplay({channel})
-    }
+    
+    selectIndices.forEach((selectIndex)=>{
+        if(selectIndex < 1 || selectIndex > voteEntries.length || parseInt(selectIndex) != selectIndex){
+            console.log('[voteSelect] not avaiable selectIndex')
+        } else {
+            voteEntryIndex = selectIndex - 1
+            voteEntries[voteEntryIndex][1] += 1
+        }
+    })    
+    voteDisplay({channel})
 }
 
 const voteDisplay = ({channel}) => {
